@@ -16,35 +16,38 @@
 ВЫХОДЫНЫЕ ДАННЫЕ:
 В единственной строке выведите сжатое сообщение.
 """
+def counting(s):
+    if not s:  # обработка пустой строки
+        return ""
 
-s = input()
-result = ""
+    count = 1
+    current_char = s[0]
+    result = ""
 
-count = 1
-current_char = s[0]
-
-if not s:
-    print("")
-    exit()
-
-for i in range(1, len(s)):
-    if current_char == s[i]:
-        count += 1
-    else:
-        if count > 1:
-            result += str(count) + current_char
+    for i in range(1, len(s)):
+        if current_char == s[i]:
+            count += 1
         else:
-            result += current_char
-        count = 1
-        current_char = s[i]
+            if count > 1:
+                result += str(count) + current_char
+            else:
+                result += current_char
+            count = 1
+            current_char = s[i]
 
-if count > 1:
-    result += str(count) + current_char
-else:
-    result += current_char
+    if count > 1:
+        result += str(count) + current_char
+    else:
+        result += current_char
 
-print(result)
+    return result
+def main():
+    s = input()
+    result = counting(s)
+    print(result)
 
+if __name__ == '__main__':
+    main()
 
 
 

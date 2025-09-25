@@ -22,13 +22,43 @@
 кавычек), если ненадежный.
 """
 
-N = int(input())
-passwords = []
+def check(password):
+    symbols = ['!', '@', '#', '$', '%', '&', '+']
 
-symbols = ['!', '@', '#', '$', '%', '&', '+']
+    has_upper = False
+    has_lower = False
+    has_digit = False
+    has_special = False
 
-for _ in range(N):
-    s = input()
-    passwords.append(s)
+    if len(password) < 12:
+        return False
+
+    for char in password:
+        if char.isupper(): # Если символ - заглавная буква
+            has_upper = True
+        elif char.islower(): # Если символ - строчная буква
+            has_lower = True
+        elif char.isdigit(): # Если символ - цифра
+            has_digit = True
+        elif char in symbols:
+            has_special = True
+
+    return has_upper and has_lower and has_digit and has_special
+
+def main():
+    N = int(input())
+    passwords = []
+    for _ in range(N):
+        s = input()
+        passwords.append(s)
+
+    for pas in passwords:
+        if check(pas):
+            print('Valid')
+        else:
+            print('Invalid')
+
+if __name__ == '__main__':
+    main()
 
 
