@@ -14,10 +14,57 @@
 б) список всех дат с указанием суммарной стоимости проданных в этот день
 пицц; список должен быть отсортирован хронологически;
 в) информацию о самом дорогом заказе;
-г) среднюю стоимость заказа (среднее арифметическое по всем
+г) среднюю стоимость заказа (среднее арифметическое по всем заказам)
 Формат входных и выходных данных определите самостоятельно.
 """
+def allPizza(orders):
+    pizza = {}
+    for order in orders:
+        pizza_name = order['name']
+        if pizza_name in pizza:
+            pizza[pizza_name] += 1
+        else:
+            pizza[pizza_name] = 1
 
+    sorted_pizzas = sorted(pizza.items(), key=lambda x: x[1], reverse=True)
+    print("\na) Список пицц по популярности:")
+    for pizza, count in sorted_pizzas:
+        print(f"{pizza}: {count} раз(а)")
+
+def allData(orders):
+    data_sales = {}
+    for order in orders:
+        date = order['data']
+        cost = order['cost']
+        if date in data_sales:
+            data_sales[date] += cost
+        else:
+            data_sales[date] = cost
+
+    sorted_dates = sorted(data_sales.keys())
+    print("\nб) Суммарная стоимость по дням:")
+    for date in sorted_dates:
+        print(f"{date}: {data_sales[date]} руб.")
+
+
+def mxCost(orders):
+    mx = 0
+    mx_order = {}
+    for order in orders:
+        if order['cost'] > mx:
+            mx = order['cost']
+            mx_order = order
+
+
+    print(f"\nв) Самый дорогой заказ: \n{mx_order['data']} {mx_order['name']} {mx_order['cost']}")
+
+
+def  averageCost(orders, n):
+    cost = 0
+    for order in orders:
+        cost += order['cost']
+
+    print(f"\nг) Средняя стоимость заказов: {cost / n}")
 
 def main():
     n = int(input('Введите количество заказов: '))
@@ -38,7 +85,10 @@ def main():
 
         orsers.append(order)
 
-
+    allPizza(orsers)
+    allData(orsers)
+    mxCost(orsers)
+    averageCost(orsers, n)
 
 if __name__ == '__main__':
     main()
