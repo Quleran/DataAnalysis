@@ -17,30 +17,32 @@
 В единственной строке выведите сжатое сообщение.
 """
 def counting(s):
-    if not s:  # обработка пустой строки
+    if not s:  # Обработка пустой строки
         return ""
 
     count = 1
-    current_char = s[0]
+    current_char = s[0] # Символ для сравнения
     result = ""
 
     for i in range(1, len(s)):
         if current_char == s[i]:
             count += 1
         else:
-            if count > 1:
+            if count > 1: # Проверка, чтобы не добавлять "1"
                 result += str(count) + current_char
             else:
                 result += current_char
             count = 1
             current_char = s[i]
 
+    # Обработка последней подстроки
     if count > 1:
         result += str(count) + current_char
     else:
         result += current_char
 
     return result
+
 def main():
     s = input()
     result = counting(s)
