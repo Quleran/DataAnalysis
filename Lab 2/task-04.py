@@ -128,3 +128,11 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+"""
+Ivan Aleksej Igor
+3
+Ivan 500
+Aleksej 100
+Ivan 200
+"""
