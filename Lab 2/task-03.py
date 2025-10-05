@@ -40,12 +40,15 @@
 Выведите одно целое число – сколько чисел из представленных можно
 считать некорректными.
 """
+
+# Нахождение медианы
 def find_median(sorted_list):
     n = len(sorted_list)
     if n % 2 == 1:
         return sorted_list[n // 2]
     else:
         return (sorted_list[n // 2 - 1] + sorted_list[n // 2]) / 2
+
 def quartiles(stud, n):
     Q2 = find_median(stud)
     if n % 2 == 0:
