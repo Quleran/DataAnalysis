@@ -42,7 +42,7 @@ print(df_cons.to_string(index=True))
 year_consumption = np.array(np.nansum(consumpt, axis=0))
 print(f'\n3.1 Суммарное потребление электроэнергии за каждый год:\n{year_consumption}')
 
-# 3.2 Суммарное потребление электроэнергии за каждый год
+# 3.2 Максимальное количество электроэнергии, которое произвела одна страна за один год
 year_max = np.nanmax(generat)
 print(f'\n3.2 Максимальное количество электроэнергии:\n{year_max}')
 
