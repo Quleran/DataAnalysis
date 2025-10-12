@@ -6,11 +6,15 @@ data = np.genfromtxt("data2.csv", dtype=float,
                         delimiter=';', encoding='utf-8-sig')
 discounts = data[:, 0]  # Скидки
 profits = data[:, 1]
+average_profit = np.mean(profits)
+print(f"Среднее значение прибыли: {average_profit}")
+
 x_val = [data[0, 0], data[(data.shape[0])//2, 0], data[-1, 0]]
 y_val = [data[0, 1], data[(data.shape[0])//2, 1], data[-1, 1]]
 matr = [[x**2, x, 1] for x in x_val]
 coefs = solve(matr, y_val)
 f_2 = coefs[0] * discounts**2 + coefs[1] * discounts + coefs[2]
+print(f'\n\nКоэффициенты полинома 2: {coefs}')
 
 vals = []
 for r in data:
@@ -32,12 +36,12 @@ y_val_3 = [data[0, 1], data[(data.shape[0])//3, 1],
            data[(data.shape[0])//3*2, 1], data[-1, 1]]
 matr_3 = [[x**3, x**2, x, 1] for x in x_val_3]
 coefs_3 = solve(matr_3, y_val_3)
-
+print(f'\n\n\nКоэффициенты полинома 3: {coefs_3}')
 vals_3 = []
 for r in data:
     vals_3.append(coefs_3[0]*r[0]**3 + coefs_3[1]*r[0]
                   ** 2 + coefs_3[2]*r[0] + coefs_3[3])
-print("\n\n\nСкидка (%) | Прибыль (факт) | Прибыль (расчёт)")
+print("Скидка (%) | Прибыль (факт) | Прибыль (расчёт)")
 print("-" * 45)
 for i, (discount, profit) in enumerate(data):
     calculated = vals_3[i]
@@ -48,7 +52,8 @@ print("RSS для полинома 3-й степени:", RSS_3)
 
 
 print("\nЗначение прибыли при значениях скидки в 6 и 8 процентов:\n",
-      coefs_3[0]*6.0**3 + coefs_3[1]*6.0**2 + coefs_3[2]*6.0 + coefs_3[3], coefs_3[0]*8.0**3 + coefs_3[1]*8.0**2 + coefs_3[2]*8.0 + coefs_3[3])
+      coefs_3[0]*6.0**3 + coefs_3[1]*6.0**2 + coefs_3[2]*6.0 + coefs_3[3], "руб.",
+      coefs_3[0]*8.0**3 + coefs_3[1]*8.0**2 + coefs_3[2]*8.0 + coefs_3[3], "руб.")
 
 plt.figure(figsize=(10, 6))
 plt.plot(discounts, profits, '-', label='Данные из файла')
@@ -66,4 +71,35 @@ plt.ylabel('Прибыль')
 plt.legend()
 plt.show()
 
+# Создаем расширенный диапазон скидок до 10%
+extended_discounts = np.linspace(min(discounts), 10, 100)
+
+# Вычисляем значения функций для расширенного диапазона
+f_2_extended = coefs[0] * extended_discounts**2 + coefs[1] * extended_discounts + coefs[2]
+f_3_extended = coefs_3[0] * extended_discounts**3 + coefs_3[1] * extended_discounts**2 + coefs_3[2] * extended_discounts + coefs_3[3]
+
+# График для полинома 2-й степени
+plt.figure(figsize=(10, 6))
+plt.plot(discounts, profits, 'o', label='Данные из файла', markersize=4)
+plt.plot(extended_discounts, f_2_extended, '-', label='Полином 2-й степени')
+plt.xlabel('Скидка (%)')
+plt.ylabel('Прибыль')
+plt.title('Полином 2-й степени (расширен до 10%)')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.xlim(min(discounts), 10)  # Устанавливаем границы оси X до 10%
+plt.show()
+
+
+# График для полинома 3-й степени
+plt.figure(figsize=(10, 6))
+plt.plot(discounts, profits, 'o', label='Данные из файла', markersize=4)
+plt.plot(extended_discounts, f_3_extended, '-', label='Полином 3-й степени')
+plt.xlabel('Скидка (%)')
+plt.ylabel('Прибыль')
+plt.title('Полином 3-й степени (расширен до 10%)')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.xlim(min(discounts), 10)  # Устанавливаем границы оси X до 10%
+plt.show()
 

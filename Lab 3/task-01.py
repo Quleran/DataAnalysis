@@ -46,6 +46,21 @@ print(f'\n3.1 Суммарное потребление электроэнерг
 year_max = np.nanmax(generat)
 print(f'\n3.2 Максимальное количество электроэнергии:\n{year_max}')
 
+# Находим индекс максимального значения
+max_index = np.where(generat == year_max)
+country_index = max_index[0][0]
+year_index = max_index[1][0]
+
+# Определяем страну и год
+max_country = countries[country_index]
+
+# Годы из файла (предполагаем, что это 2000-2023 годы, нужно уточнить по данным)
+# Если в файле есть заголовок с годами, можно вытащить оттуда
+years = np.genfromtxt('global-electricity-generation.csv', dtype=str, delimiter=',', max_rows=1)[1:]
+max_year = years[year_index]
+
+print(f'Максимальное производство достигнуто в {max_year} году страной {max_country}')
+
 # 3.3 Страны которые производят более 500 млрд. кВт*ч в год
 more_500 = np.array(countries[average_generation > 500])
 print(f'\n3.3 Производят более 500 млрд. кВт*ч в год:\n{more_500}')
@@ -53,16 +68,16 @@ print(f'\n3.3 Производят более 500 млрд. кВт*ч в год:
 # 3.4 10% стран, которые потребляют больше всего электроэнергии ежегодно в среднем за последние 5 лет
 quant = np.nanquantile(average_consumption, 0.9)
 consumption_max_country = np.array(countries[average_consumption >= quant])
-print(f'\n3.4 10% стран, которые потребляют больше всегоэлектроэнергии ежегодно в среднем за последние 5 лет:\n{consumption_max_country}')
+print(f'\n3.4 10% стран, которые потребляют больше всего электроэнергии ежегодно в среднем за последние 5 лет:\n{consumption_max_country}')
 
 # 3.5 Список стран, которые увеличили производство электроэнергии в 2021 году по сравнению с 1992 годом более, чем в 10 раз
 big_generation_country = np.array(countries[generat .T[-1] > generat .T[0] * 10])
-print(f'\n3.5 Увеличили производство в 10 раз с 1992 года, посравнению с 2021:\n{big_generation_country}')
+print(f'\n3.5 Увеличили производство в 10 раз с 1992 года, по сравнению с 2021:\n{big_generation_country}')
 
 # 3.6 Список стран, которые в сумме за все годы потратили больше 100 млрд. кВт*ч электроэнергии и при этом произвели меньше, чем потратили
 boring_country = np.array(countries[(np.nansum(consumpt, axis=1) > 100)
 & (np.nansum(generat, axis=1) < (np.nansum(consumpt, axis=1)))])
-print(f'\n3.6 Список стран, которые в сумме за все годы потратилибольше 100 млрд. кВт*ч электроэнергии и при этом произвели меньше, чем потратили:\n{boring_country}')
+print(f'\n3.6 Список стран, которые в сумме за все годы потратили больше 100 млрд. кВт*ч электроэнергии и при этом произвели меньше, чем потратили:\n{boring_country}')
 
 # 3.7. Какая страна потратила наибольшее количество электроэнергии в 2020 году
 country = countries[np.nanargmax(consumpt[:, -2])]
