@@ -66,6 +66,8 @@ service calls», построив таблицу сопряженности (ф�
 """
 CrossTab = pd.crosstab(df['Churn'], df['Customer service calls'])
 Churn_By_Calls = CrossTab.apply(lambda x:x.iloc[1]/x.sum() * 100, axis = 0)
+
+print(CrossTab)
 Higher_Than_40 = Churn_By_Calls[Churn_By_Calls > 40]
 print(f"\n6.  Количество звонков, при которых процент оттока выше 40%: \n{Higher_Than_40}")
 

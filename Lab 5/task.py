@@ -5,18 +5,29 @@ import seaborn as sns
 """
 1. Загрузить данные их файла
 """
-df = pd.read_csv('weather1.csv', sep=';', usecols=["Местное время в Перми", "T", "P", "U", "Ff", "N", "H", "VV"])
-df['Местное время в Перми'] = pd.to_datetime(df['Местное время в Перми'])
+df = pd.read_csv('weather1.csv', sep=';',
+                 usecols=[
+                     "Местное время в Перми",
+                     "T", # температура воздуха
+                     "P", # атмосферное давление
+                     "U", # относительная влажность
+                     "Ff", # скорость ветра
+                     "N", # облачность
+                     "H", # высота основания облаков
+                     "VV" # горизонтальная дальность видимости
+    ])
+
 
 """
 2. Постройте точечную диаграмму (диаграмму рассеяния) по 
 признакам температуры и относительной влажности.
 """
 plt.figure(figsize=(10, 6))
-sns.scatterplot(data=df, x="T", y="U")
-plt.title('Диаграмма рассеяния: температура vs относительная влажность')
+plt.scatter(df['T'], df['U'])
+plt.title('Диаграмма рассеяния: температура и относительная влажность')
 plt.xlabel('Температура (°C)')
 plt.ylabel('Относительная влажность (%)')
+plt.grid(True, alpha=0.3)
 plt.show()
 
 """
@@ -28,18 +39,21 @@ colors = ['blue' if clouds == '100%.' else 'red' for clouds in df['N']]
 plt.title('синий - 100% облачность, красным - остальные')
 plt.xlabel('Температура')
 plt.ylabel('Влажность')
-plt.scatter(x=df['T'] , y=df['U'] , c=colors, s=8)
+plt.scatter(df['T'] , df['U'] , c=colors)
+plt.grid(True, alpha=0.3)
 plt.show()
 
 """
 4. Постройте линейную диаграмму (график) изменения
 температуры в зависимости от местного времени.
 """
+df['Местное время в Перми'] = pd.to_datetime(df['Местное время в Перми'], format='%d.%m.%Y %H:%M')
 plt.figure(figsize=(10, 6))
-plt.plot(df['T'], color='blue')
+plt.plot(df['Местное время в Перми'], df['T'], color='blue')
 plt.title('Изменение температуры в зависимости от времени')
 plt.xlabel('Местное время в Перми')
 plt.ylabel('Температура (°C)')
+plt.grid(True, alpha=0.3)
 plt.show()
 
 """
@@ -49,14 +63,14 @@ plt.show()
 отдельный столбец с номером месяца (вычислив его из столбца
 «Местное время»), а затем сгруппируйте данные по этому столбцу.
 """
-df['Местное время в Перми'] = pd.to_datetime(df['Местное время в Перми'], errors='coerce', dayfirst=True)
 # Создаем столбец с номером месяца
 df['Месяц'] = df['Местное время в Перми'].dt.month
 # Группируем по месяцу и вычисляем среднюю температуру
 monthly_avg_temp = df.groupby('Месяц')['T'].mean()
-# Столбчатая диаграмма
+
+
 plt.figure(figsize=(10, 6))
-monthly_avg_temp.plot(kind='bar', color='skyblue')
+monthly_avg_temp.plot(kind='bar', color='red')
 plt.title('Средняя температура по месяцам')
 plt.xlabel('Месяц')
 plt.ylabel('Средняя температура (°C)')
@@ -72,7 +86,7 @@ plt.show()
 cloud_counts = df['N'].value_counts()
 # Построим ленточную диаграмму
 plt.figure(figsize=(10, 6))
-cloud_counts.plot(kind='barh', color='blue', edgecolor='black')
+cloud_counts.plot(kind='barh', color='blue')
 plt.title('Количество наблюдений по облачности')
 plt.xlabel('Количество наблюдений')
 plt.ylabel('Облачность (%)')
@@ -83,10 +97,11 @@ plt.show()
 гистограмме должно быть 10 диапазонов температуры.
 """
 plt.figure(figsize=(10, 6))
-plt.hist(df['T'], bins=10, color='skyblue', edgecolor='black')
-plt.title('Гистограмма температуры')
+plt.hist(df['T'].dropna(), bins=10, color='orange', alpha=0.7, edgecolor='black')
 plt.xlabel('Температура (°C)')
 plt.ylabel('Частота')
+plt.title('Гистограмма распределения температуры (10 диапазонов)')
+plt.grid(True, alpha=0.3)
 plt.show()
 
 """
@@ -96,12 +111,14 @@ plt.show()
 области для каждой группы постройте boxplot (диаграмму «ящик с
 усами») для признака «атмосферное давление».
 """
-groups = ['< 5 км', '5-15 км', '> 15 км']
-df['Группа по дальности видимости'] = pd.cut(
-    df['VV'], bins=[0, 5, 15, float('inf')], labels=groups, right=False)
-# Построим boxplot
+visibility_groups = ['< 5 км', '5-15 км', '> 15 км']
+bins = [0, 5, 15, float('inf')]
+
+df['Группа видимости'] = pd.cut(df['VV'], bins=bins, labels=visibility_groups, right=True)
+print(df[['VV', 'Группа видимости']])
+
 plt.figure(figsize=(10, 6))
-sns.boxplot(x='Группа по дальности видимости', y='P', data=df)
+sns.boxplot(x='Группа видимости', y='P', data=df)
 plt.title('Распределение атмосферного давления по группам дальности видимости')
 plt.xlabel('Группа по дальности видимости')
 plt.ylabel('Атмосферное давление (мм. рт. ст.)')
@@ -112,7 +129,7 @@ plt.show()
 основания облаков».
 """
 cloud_height_counts = df['H'].value_counts()
-# Построим круговую диаграмму
+
 plt.figure(figsize=(8, 8))
 cloud_height_counts.plot(kind='pie', autopct='%1.1f%%', startangle=90, cmap='Set2')
 plt.title('Распределение высоты основания облаков')
